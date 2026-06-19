@@ -155,7 +155,15 @@
     .nav { display: none; }
     .aside { display: none; }
     .header-pills { display: none; }
-    .api-key-input { width: 160px; }
+    .api-key-input { width: 150px; font-size: 11px; }
+    .api-key-label { display: none; }
+    main { padding: 16px; }
+    .module-bar { padding: 14px 16px; }
+    .module-title { font-size: 20px; }
+    textarea { font-size: 15px; }
+  }
+  @media (min-width: 901px) {
+    #mobileModules { display: none !important; }
   }
 </style>
 </head>
@@ -179,7 +187,9 @@
       </div>
       <div class="api-key-wrap">
         <span class="api-key-label">API Key</span>
-        <input type="password" id="apiKey" class="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off">
+        <input type="password" id="apiKey" class="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off"
+          oninput="localStorage.setItem('stratiq_key', this.value)"
+          onchange="localStorage.setItem('stratiq_key', this.value)">
       </div>
       <button onclick="openExport()" id="exportBtn" disabled
         style="padding:7px 16px;border:none;border-radius:3px;background:var(--gold);color:var(--navy);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--ff-body);opacity:0.5;transition:all 0.2s;">
@@ -222,6 +232,12 @@
         <div class="pillar-cell"><span class="pillar-n">3</span><span class="pillar-l">Achieve</span></div>
       </div>
     </div>
+
+    <!-- MOBILE MODULE SWITCHER -->
+    <div id="mobileModules" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;"></div>
+
+    <!-- MOBILE MODULE SWITCHER -->
+    <div id="mobileModules" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;"></div>
 
     <!-- Input -->
     <div class="input-card">
@@ -367,6 +383,20 @@ function renderNav() {
       ${sessions[m.id] ? '<span class="nav-done">✓</span>' : ''}
     </button>
   `).join("");
+
+  // Mobile module switcher
+  const mob = document.getElementById("mobileModules");
+  if (mob) {
+    mob.innerHTML = MODULES.map(m => `
+      <button onclick="switchModule('${m.id}')"
+        style="padding:6px 12px;border-radius:20px;border:1.5px solid ${m.id===activeId?'#1E2761':'#CBD5E0'};
+               background:${m.id===activeId?'#1E2761':'#fff'};color:${m.id===activeId?'#fff':'#666'};
+               font-size:11px;font-weight:700;cursor:pointer;font-family:var(--ff-body);
+               display:flex;align-items:center;gap:5px;white-space:nowrap;">
+        ${m.short}${sessions[m.id]?' ✓':''}
+      </button>
+    `).join("");
+  }
 }
 
 function renderChips() {
@@ -416,11 +446,12 @@ document.getElementById("queryInput").addEventListener("input", updateCharCount)
 
 /* ── API CALL ──────────────────────────────────────────────────── */
 async function runAnalysis() {
-  const apiKey = document.getElementById("apiKey").value.trim();
+  const apiKeyEl = document.getElementById("apiKey");
+  const apiKey = (apiKeyEl.value || "").trim();
   const query  = document.getElementById("queryInput").value.trim();
   const mod    = MODULES.find(m => m.id === activeId);
 
-  if (!apiKey) { showError("Please enter your Anthropic API key in the header."); return; }
+  if (!apiKey || !apiKey.startsWith("sk-")) { showError("Please enter a valid Anthropic API key (starts with sk-ant-...) in the API Key field above."); return; }
   if (!query)  { showError("Please describe your strategic challenge."); return; }
 
   setLoading(true);
@@ -642,6 +673,10 @@ document.getElementById("exportModal").addEventListener("click", e => {
 function escHtml(str) {
   return (str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
+
+// Restore saved key
+const saved = localStorage.getItem('stratiq_key');
+if (saved) document.getElementById('apiKey').value = saved;
 
 init();
 </script>
