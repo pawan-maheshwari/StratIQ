@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StratIQ — Nonprofit Strategic Advisory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:    #1E2761;
+    --navy-d:  #151c4a;
+    --gold:    #C9A84C;
+    --gold-l:  #e8c96a;
+    --white:   #FFFFFF;
+    --cream:   #F8F9FC;
+    --ink:     #1a1f36;
+    --muted:   #4A5568;
+    --rule:    #CBD5E0;
+    --light:   #EEF2FF;
+    --radius:  4px;
+    --ff-head: 'Playfair Display', Georgia, serif;
+    --ff-body: 'Inter', system-ui, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { background: #F7F8FC; font-family: var(--ff-body); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* ── HEADER ─────────────────────────────────────── */
+  header { background: var(--navy); border-bottom: 3px solid var(--gold); position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: 1280px; margin: 0 auto; padding: 0 28px; display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-mark { width: 36px; height: 36px; border-radius: var(--radius); background: var(--gold); display: flex; align-items: center; justify-content: center; font-family: var(--ff-head); font-size: 18px; font-weight: 700; color: var(--navy); flex-shrink: 0; }
+  .brand-name { font-family: var(--ff-head); font-size: 20px; font-weight: 700; color: var(--white); line-height: 1; }
+  .brand-sub  { font-size: 9px; color: #8FA8D8; letter-spacing: 1.8px; text-transform: uppercase; margin-top: 2px; }
+  .header-pills { display: flex; gap: 8px; align-items: center; }
+  .pill { font-size: 10px; color: #8FA8D8; letter-spacing: 0.8px; padding: 3px 12px; border: 1px solid #2B3A6A; border-radius: 20px; }
+  .api-key-wrap { display: flex; align-items: center; gap: 8px; }
+  .api-key-input { background: rgba(255,255,255,0.08); border: 1px solid #2B3A6A; border-radius: var(--radius); padding: 6px 12px; color: var(--white); font-size: 12px; font-family: var(--ff-body); width: 220px; outline: none; transition: border-color 0.2s; }
+  .api-key-input::placeholder { color: #5A6EA0; }
+  .api-key-input:focus { border-color: var(--gold); }
+  .api-key-label { font-size: 10px; color: #8FA8D8; white-space: nowrap; }
+
+  /* ── LAYOUT ─────────────────────────────────────── */
+  .layout { flex: 1; max-width: 1280px; margin: 0 auto; width: 100%; display: flex; padding: 0; }
+
+  /* ── LEFT NAV ───────────────────────────────────── */
+  .nav { width: 188px; flex-shrink: 0; padding: 24px 14px; border-right: 1px solid var(--rule); background: var(--white); }
+  .nav-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #AAA; font-weight: 700; margin-bottom: 10px; margin-top: 0; }
+  .nav-btn { display: flex; align-items: center; width: 100%; padding: 8px 10px; border: none; border-left: 3px solid transparent; border-radius: 0 3px 3px 0; cursor: pointer; margin-bottom: 3px; text-align: left; transition: all 0.15s; background: transparent; color: #666; gap: 10px; }
+  .nav-btn:hover { background: #EEF2FF; }
+  .nav-btn.active { border-left-color: var(--navy); background: var(--light); color: var(--navy); }
+  .nav-chip { font-size: 10px; padding: 2px 8px; border-radius: 2px; font-weight: 700; letter-spacing: 0.3px; background: #D8D3CC; color: #777; transition: all 0.15s; white-space: nowrap; }
+  .nav-btn.active .nav-chip { background: var(--navy); color: var(--white); }
+  .nav-done { margin-left: auto; color: #2D6A4F; font-size: 13px; }
+  .history-card { padding: 8px 10px; border-radius: 3px; background: #F0EDE6; margin-bottom: 5px; }
+  .history-card .h-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .history-card .h-query { font-size: 11px; color: #555; margin-top: 3px; line-height: 1.4; }
+  .history-card .h-time  { font-size: 10px; color: #AAA; margin-top: 3px; }
+
+  /* ── MAIN ───────────────────────────────────────── */
+  main { flex: 1; padding: 24px 28px; min-width: 0; }
+
+  .module-bar { background: var(--white); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 18px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 4px solid var(--navy); }
+  .module-tag { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--white); padding: 2px 8px; border-radius: 2px; font-weight: 700; background: var(--navy); }
+  .module-title { font-family: var(--ff-head); font-size: 24px; font-weight: 700; margin-top: 6px; line-height: 1.1; }
+  .pillar-row { display: flex; gap: 18px; flex-shrink: 0; }
+  .pillar-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .pillar-n { font-family: var(--ff-head); font-size: 22px; font-weight: 700; line-height: 1; color: var(--navy); }
+  .pillar-l { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: #999; }
+
+  .input-card { background: var(--white); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px; }
+  .input-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .input-lbl { font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; color: #999; font-weight: 700; }
+  .example-btn { font-size: 12px; background: none; border: none; cursor: pointer; font-weight: 600; color: var(--navy); font-family: var(--ff-body); }
+  .example-btn:hover { text-decoration: underline; }
+  textarea { width: 100%; border: 1px solid #C8C0B4; border-radius: 3px; background: #FFFEF9; padding: 12px 14px; font-size: 14px; line-height: 1.6; color: var(--ink); resize: vertical; outline: none; transition: border-color 0.2s; font-family: var(--ff-body); }
+  textarea:focus { border-color: var(--navy); }
+  .input-foot { display: flex; justify-content: space-between; margin-top: 7px; }
+  .hint { font-size: 11px; color: #B8B0A5; }
+
+  .run-btn { width: 100%; padding: 13px 20px; border: none; border-radius: 3px; color: var(--white); font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 18px; transition: all 0.2s; font-family: var(--ff-body); background: var(--navy); cursor: pointer; }
+  .run-btn:hover:not(:disabled) { background: var(--navy-d); }
+  .run-btn:disabled { background: #B0A898; cursor: not-allowed; }
+
+  .error-box { padding: 12px 16px; border: 1px solid #D4A0A0; border-radius: 3px; background: #FDF5F5; color: #7A2020; font-size: 13px; margin-bottom: 16px; line-height: 1.5; word-break: break-word; }
+
+  /* ── SKELETON ───────────────────────────────────── */
+  .skeleton { background: var(--white); border: 1px solid var(--rule); border-radius: var(--radius); padding: 22px; display: none; }
+  .skeleton.visible { display: block; }
+  .skel-line { height: 11px; border-radius: 2px; margin-bottom: 11px; background: linear-gradient(90deg, #EDE9E0 25%, #E0DBD3 50%, #EDE9E0 75%); background-size: 500px 100%; animation: shimmer 1.3s ease-in-out infinite; }
+  @keyframes shimmer { 0%{background-position:-500px 0} 100%{background-position:500px 0} }
+
+  /* ── RESULT CARD ────────────────────────────────── */
+  .result-card { background: var(--white); border: 1px solid var(--rule); border-radius: var(--radius); padding: 22px 24px; display: none; animation: fadeIn 0.35s ease; }
+  .result-card.visible { display: block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+  .result-head { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; margin-bottom: 18px; border-bottom: 2px solid var(--navy); }
+  .result-tag { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; color: var(--navy); }
+  .result-queued { font-size: 11px; color: #6B7280; font-style: italic; }
+  .exec-summary { font-size: 14px; line-height: 1.75; color: var(--ink); padding-left: 14px; border-left: 3px solid var(--navy); margin-bottom: 20px; font-style: italic; }
+  .section-label { font-size: 9px; letter-spacing: 1.8px; text-transform: uppercase; color: #AAA; font-weight: 700; margin-bottom: 12px; }
+  .action-row { display: flex; gap: 11px; margin-bottom: 12px; align-items: flex-start; }
+  .action-badge { width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: var(--white); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .action-text { font-size: 14px; line-height: 1.65; color: #3A3020; }
+  .callout-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 4px; }
+  .callout-box { flex: 1; min-width: 200px; padding: 13px 15px; background: #F0EDE6; border-radius: 3px; border-top: 3px solid var(--navy); }
+  .callout-box.metric { border-top-color: #8B7355; }
+  .callout-lbl { font-size: 9px; letter-spacing: 1.8px; text-transform: uppercase; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
+  .callout-box.metric .callout-lbl { color: #8B7355; }
+  .callout-txt { font-size: 13px; color: #3A3020; line-height: 1.55; }
+
+  /* ── RIGHT ASIDE ────────────────────────────────── */
+  .aside { width: 210px; flex-shrink: 0; padding: 24px 14px; border-left: 1px solid var(--rule); background: var(--white); }
+  .aside-card { border: 1px solid var(--rule); border-radius: var(--radius); padding: 13px; margin-bottom: 16px; background: var(--cream); }
+  .aside-title { font-family: var(--ff-head); font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+  .aside-sub   { font-size: 10px; color: #999; letter-spacing: 0.6px; margin-bottom: 10px; }
+  .aside-rule  { height: 1px; background: var(--rule); margin-bottom: 12px; }
+  .aside-step  { margin-bottom: 11px; }
+  .aside-step strong { font-size: 11px; color: var(--ink); display: block; margin-bottom: 2px; }
+  .aside-step span   { font-size: 11px; color: #888; line-height: 1.4; }
+  .stat-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+  .stat-val { font-family: var(--ff-head); font-size: 22px; font-weight: 700; color: var(--navy); line-height: 1; }
+  .stat-desc{ font-size: 11px; color: #888; line-height: 1.4; }
+  .module-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .module-chip { font-size: 10px; padding: 4px 8px; border: 1px solid var(--rule); border-radius: 2px; cursor: pointer; background: var(--cream); color: #666; font-weight: 700; font-family: var(--ff-body); transition: all 0.15s; }
+  .module-chip:hover { background: var(--light); }
+  .module-chip.active { border-color: var(--navy); background: var(--light); color: var(--navy); }
+
+  /* ── FOOTER ─────────────────────────────────────── */
+  footer { border-top: 1px solid var(--rule); background: var(--white); padding: 13px 28px; display: flex; justify-content: space-between; font-size: 11px; color: #999; }
+
+  /* ── EXPORT MODAL ───────────────────────────────── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: none; align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--cream); border-radius: 6px; width: 100%; max-width: 800px; box-shadow: 0 24px 64px rgba(0,0,0,0.3); }
+  .modal-head { padding: 20px 26px 16px; border-bottom: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: flex-start; }
+  .modal-title { font-family: var(--ff-head); font-size: 22px; font-weight: 700; color: var(--navy); }
+  .modal-sub   { font-size: 12px; color: #888; margin-top: 4px; }
+  .modal-close { background: none; border: 1px solid var(--rule); border-radius: 3px; padding: 6px 14px; cursor: pointer; font-size: 12px; color: #666; font-family: var(--ff-body); }
+  .modal-close:hover { background: var(--light); }
+  .modal-body  { padding: 20px 26px 26px; max-height: 70vh; overflow-y: auto; }
+  .modal-module { margin-bottom: 28px; padding-top: 14px; border-top: 3px solid var(--navy); }
+  .modal-module-tag   { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; color: var(--navy); }
+  .modal-module-title { font-family: var(--ff-head); font-size: 20px; font-weight: 700; color: var(--navy); margin: 5px 0 6px; }
+  .modal-module-q     { font-size: 12px; color: #888; font-style: italic; margin-bottom: 14px; }
+  .modal-divider { height: 1px; background: var(--rule); margin-top: 24px; }
+  .copy-btn { margin: 0 26px 16px; padding: 9px 20px; background: var(--navy); color: var(--white); border: none; border-radius: 3px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: var(--ff-body); transition: background 0.2s; }
+  .copy-btn:hover { background: var(--navy-d); }
+  .copy-btn.copied { background: #2D6A4F; }
+
+  @media (max-width: 900px) {
+    .nav { display: none; }
+    .aside { display: none; }
+    .header-pills { display: none; }
+    .api-key-input { width: 160px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div>
+        <div class="brand-name">StratIQ</div>
+        <div class="brand-sub">Nonprofit Strategic Advisory · xP&A</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <div class="header-pills">
+        <span class="pill">1. Analyze</span>
+        <span class="pill">2. Plan</span>
+        <span class="pill">3. Achieve</span>
+      </div>
+      <div class="api-key-wrap">
+        <span class="api-key-label">API Key</span>
+        <input type="password" id="apiKey" class="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off">
+      </div>
+      <button onclick="openExport()" id="exportBtn" disabled
+        style="padding:7px 16px;border:none;border-radius:3px;background:var(--gold);color:var(--navy);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--ff-body);opacity:0.5;transition:all 0.2s;">
+        ⬇ View Brief
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- BODY -->
+<div class="layout">
+
+  <!-- LEFT NAV -->
+  <nav class="nav" id="navPanel">
+    <div class="nav-label">Planning Modules</div>
+    <!-- Populated by JS -->
+    <div id="navModules"></div>
+    <div id="exportReadyPanel" style="display:none;margin-top:18px;padding:11px 10px;background:#EEF7F2;border-radius:4px;border:1px solid #C6E2D4;">
+      <div class="nav-label" style="margin-bottom:6px;">Ready to Export</div>
+      <div id="exportReadyList"></div>
+    </div>
+    <div id="historySection" style="display:none;margin-top:20px;">
+      <div class="nav-label">Session History</div>
+      <div id="historyList"></div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main id="mainPanel">
+
+    <!-- Module bar -->
+    <div class="module-bar" id="moduleBar">
+      <div>
+        <span class="module-tag" id="moduleTag"></span>
+        <div class="module-title" id="moduleTitle"></div>
+      </div>
+      <div class="pillar-row">
+        <div class="pillar-cell"><span class="pillar-n">1</span><span class="pillar-l">Analyze</span></div>
+        <div class="pillar-cell"><span class="pillar-n">2</span><span class="pillar-l">Plan</span></div>
+        <div class="pillar-cell"><span class="pillar-n">3</span><span class="pillar-l">Achieve</span></div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-card">
+      <div class="input-top">
+        <span class="input-lbl">Strategic Challenge</span>
+        <button class="example-btn" onclick="loadExample()">Load example →</button>
+      </div>
+      <textarea id="queryInput" rows="4" placeholder="Describe the strategic challenge your organisation is facing…"
+        onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))runAnalysis()"></textarea>
+      <div class="input-foot">
+        <span class="hint">Ctrl + Enter to analyse</span>
+        <span class="hint" id="charCount">0 chars</span>
+      </div>
+    </div>
+
+    <button class="run-btn" id="runBtn" onclick="runAnalysis()">Run Strategic Analysis</button>
+
+    <div class="error-box" id="errorBox" style="display:none;"></div>
+
+    <!-- Skeleton -->
+    <div class="skeleton" id="skeleton">
+      <div class="skel-line" style="width:100%"></div>
+      <div class="skel-line" style="width:85%"></div>
+      <div class="skel-line" style="width:92%"></div>
+      <div class="skel-line" style="width:68%"></div>
+      <div class="skel-line" style="width:80%"></div>
+      <div class="skel-line" style="width:55%"></div>
+      <div class="skel-line" style="width:88%"></div>
+    </div>
+
+    <!-- Result -->
+    <div class="result-card" id="resultCard">
+      <div class="result-head">
+        <span class="result-tag" id="resultTag"></span>
+        <span class="result-queued">✓ Added to export</span>
+      </div>
+      <p class="exec-summary" id="execSummary"></p>
+      <div class="section-label">Recommended Actions</div>
+      <div id="actionsList"></div>
+      <div class="callout-row" id="calloutRow"></div>
+    </div>
+
+  </main>
+
+  <!-- RIGHT ASIDE -->
+  <aside class="aside">
+    <div class="nav-label">Framework</div>
+    <div class="aside-card">
+      <div class="aside-title">QueBIT xP&A</div>
+      <div class="aside-sub">eXtended Planning &amp; Analysis</div>
+      <div class="aside-rule"></div>
+      <div class="aside-step"><strong>1. Analyze</strong><span>Unify financial, operational and programme data.</span></div>
+      <div class="aside-step"><strong>2. Plan</strong><span>Model scenarios and build contingency strategies.</span></div>
+      <div class="aside-step"><strong>3. Achieve</strong><span>Execute, measure outcomes, report to stakeholders.</span></div>
+    </div>
+    <div class="nav-label">Proven Impact</div>
+    <div class="aside-card">
+      <div class="stat-row"><span class="stat-val">40%</span><span class="stat-desc">Faster planning cycles</span></div>
+      <div class="stat-row"><span class="stat-val">2×</span><span class="stat-desc">Forecast accuracy</span></div>
+      <div class="stat-row"><span class="stat-val">450h</span><span class="stat-desc">Saved annually</span></div>
+    </div>
+    <div class="nav-label">All Modules</div>
+    <div class="module-chips" id="moduleChips"></div>
+  </aside>
+
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">C-Suite Strategic Brief</div>
+        <div class="modal-sub">StratIQ · xP&A Analysis · All completed modules</div>
+      </div>
+      <button class="modal-close" onclick="closeExport()">✕ Close</button>
+    </div>
+    <button class="copy-btn" id="copyBtn" onclick="copyBrief()">Copy Full Brief to Clipboard</button>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<footer>
+  <span>StratIQ · AI-Powered Nonprofit Strategic Advisory · xP&A Framework</span>
+  <span>Inspired by QueBIT Methodology · v7.0</span>
+</footer>
+
+<script>
+/* ── DATA ──────────────────────────────────────────────────────── */
+const MODULES = [
+  { id:"mission",  label:"Mission Alignment",   short:"Mission",   tag:"Strategic Clarity",       accent:"#1B3A2D",
+    example:"Our new housing program may conflict with our core food security mission — how do we evaluate fit?" },
+  { id:"resource", label:"Resource Allocation",  short:"Resources", tag:"Financial Planning",       accent:"#1C2B4A",
+    example:"40% of our $2M budget comes from one grant expiring next year. How do we reallocate safely?" },
+  { id:"scenario", label:"Scenario Planning",    short:"Scenarios", tag:"Contingency Strategy",    accent:"#3D2B00",
+    example:"What if government funding drops 30% next fiscal year? Map the three scenarios." },
+  { id:"donor",    label:"Donor Management",     short:"Donors",    tag:"Relationship Capital",    accent:"#3A1C1C",
+    example:"Donor retention fell from 65% to 48% in 12 months. What is the recovery strategy?" },
+  { id:"impact",   label:"Impact Measurement",   short:"Impact",    tag:"Outcome Framework",       accent:"#1A2C2C",
+    example:"Our board needs measurable ROI proof for our youth education program for grant renewal." },
+  { id:"risk",     label:"Risk Assessment",       short:"Risk",      tag:"Governance & Resilience", accent:"#2B1F3A",
+    example:"We are expanding to 3 new cities next quarter. What governance risks should we plan for?" },
+];
+
+const SYSTEM = `You are StratIQ, a senior nonprofit strategy advisor using xP&A (eXtended Planning & Analysis) methodology.
+
+Analyse the specific nonprofit challenge provided. Respond in EXACTLY this format with these headings on their own lines:
+
+EXECUTIVE SUMMARY
+[One tailored sentence summarising this specific situation and recommended direction.]
+
+RECOMMENDED ACTIONS
+1. [Specific action one tailored to this exact challenge - 1 to 2 sentences]
+2. [Specific action two tailored to this exact challenge - 1 to 2 sentences]
+3. [Specific action three tailored to this exact challenge - 1 to 2 sentences]
+4. [Specific action four tailored to this exact challenge - 1 to 2 sentences]
+
+THIS WEEK
+[One concrete immediate action specific to this challenge that can begin this week.]
+
+WATCH METRIC
+[One specific KPI that directly measures progress on this exact challenge.]
+
+Be highly specific to the organisation's situation described. Under 320 words. No filler.`;
+
+/* ── STATE ─────────────────────────────────────────────────────── */
+let activeId = "mission";
+let sessions  = {};   // { moduleId: { mod, query, result } }
+let history   = [];
+
+/* ── INIT ──────────────────────────────────────────────────────── */
+function init() {
+  renderNav();
+  renderChips();
+  switchModule("mission");
+}
+
+function renderNav() {
+  const container = document.getElementById("navModules");
+  container.innerHTML = MODULES.map(m => `
+    <button class="nav-btn ${m.id===activeId?'active':''}" onclick="switchModule('${m.id}')" id="nav-${m.id}">
+      <span class="nav-chip">${m.short}</span>
+      ${sessions[m.id] ? '<span class="nav-done">✓</span>' : ''}
+    </button>
+  `).join("");
+}
+
+function renderChips() {
+  const container = document.getElementById("moduleChips");
+  container.innerHTML = MODULES.map(m => `
+    <button class="module-chip ${m.id===activeId?'active':''}" onclick="switchModule('${m.id}')">${m.short}</button>
+  `).join("");
+}
+
+function switchModule(id) {
+  activeId = id;
+  const mod = MODULES.find(m => m.id === id);
+
+  // Update module bar
+  document.getElementById("moduleTag").textContent   = mod.tag;
+  document.getElementById("moduleTag").style.background = "#1E2761";
+  document.getElementById("moduleTitle").textContent = mod.label;
+  document.getElementById("moduleBar").style.borderTopColor = "#1E2761";
+
+  // Restore saved session if exists
+  if (sessions[id]) {
+    document.getElementById("queryInput").value = sessions[id].query;
+    renderResult(sessions[id].result, mod);
+  } else {
+    document.getElementById("queryInput").value = "";
+    hideResult();
+  }
+
+  document.getElementById("errorBox").style.display = "none";
+  renderNav();
+  renderChips();
+  updateCharCount();
+}
+
+function loadExample() {
+  const mod = MODULES.find(m => m.id === activeId);
+  document.getElementById("queryInput").value = mod.example;
+  updateCharCount();
+  document.getElementById("queryInput").focus();
+}
+
+function updateCharCount() {
+  const q = document.getElementById("queryInput").value;
+  document.getElementById("charCount").textContent = q.length + " chars";
+}
+document.getElementById("queryInput").addEventListener("input", updateCharCount);
+
+/* ── API CALL ──────────────────────────────────────────────────── */
+async function runAnalysis() {
+  const apiKey = document.getElementById("apiKey").value.trim();
+  const query  = document.getElementById("queryInput").value.trim();
+  const mod    = MODULES.find(m => m.id === activeId);
+
+  if (!apiKey) { showError("Please enter your Anthropic API key in the header."); return; }
+  if (!query)  { showError("Please describe your strategic challenge."); return; }
+
+  setLoading(true);
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 1024,
+        system: SYSTEM,
+        messages: [{ role: "user", content: `${mod.label} challenge for a nonprofit: ${query}` }],
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (data?.error?.type === "authentication_error") throw new Error("Invalid API key. Please check and try again.");
+      if (res.status === 429) throw new Error("Rate limit reached. Please wait a moment and try again.");
+      throw new Error(data?.error?.message || `API error ${res.status}`);
+    }
+
+    const text = data?.content?.[0]?.text;
+    if (!text) throw new Error("No response received from model.");
+
+    const result = parseResponse(text);
+    sessions[activeId] = { mod, query, result };
+    renderResult(result, mod);
+    addToHistory(mod, query);
+    updateExportState();
+
+  } catch (e) {
+    showError(e.message || "Request failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+}
+
+/* ── PARSER ────────────────────────────────────────────────────── */
+function parseResponse(raw) {
+  const out = { summary:"", points:[], week:"", metric:"" };
+  if (!raw) return out;
+  const lines = raw.split("\n").map(l => l.trim()).filter(Boolean);
+  let sec = "";
+  for (const line of lines) {
+    const up = line.toUpperCase();
+    if (up === "EXECUTIVE SUMMARY")   { sec = "s"; continue; }
+    if (up === "RECOMMENDED ACTIONS") { sec = "a"; continue; }
+    if (up === "THIS WEEK")           { sec = "w"; continue; }
+    if (up === "WATCH METRIC")        { sec = "m"; continue; }
+    if      (sec==="s" && !out.summary)             out.summary = line;
+    else if (sec==="a" && /^\d+[.)]\s/.test(line))  out.points.push(line.replace(/^\d+[.)]\s*/,""));
+    else if (sec==="w" && !out.week)                out.week = line;
+    else if (sec==="m" && !out.metric)              out.metric = line;
+  }
+  if (!out.summary && !out.points.length) out.summary = raw;
+  return out;
+}
+
+/* ── RENDER ────────────────────────────────────────────────────── */
+function renderResult(result, mod) {
+  document.getElementById("resultTag").textContent = mod.tag + " · Strategic Brief";
+  document.getElementById("execSummary").textContent = result.summary;
+
+  const al = document.getElementById("actionsList");
+  al.innerHTML = result.points.map((pt,i) => `
+    <div class="action-row">
+      <span class="action-badge">${i+1}</span>
+      <span class="action-text">${escHtml(pt)}</span>
+    </div>
+  `).join("");
+
+  const cr = document.getElementById("calloutRow");
+  cr.innerHTML = "";
+  if (result.week) {
+    const b = document.createElement("div");
+    b.className = "callout-box";
+    b.innerHTML = `<div class="callout-lbl">This Week</div><div class="callout-txt">${escHtml(result.week)}</div>`;
+    cr.appendChild(b);
+  }
+  if (result.metric) {
+    const b = document.createElement("div");
+    b.className = "callout-box metric";
+    b.innerHTML = `<div class="callout-lbl">Watch Metric</div><div class="callout-txt">${escHtml(result.metric)}</div>`;
+    cr.appendChild(b);
+  }
+
+  document.getElementById("skeleton").classList.remove("visible");
+  document.getElementById("resultCard").classList.add("visible");
+  document.getElementById("errorBox").style.display = "none";
+}
+
+function hideResult() {
+  document.getElementById("resultCard").classList.remove("visible");
+  document.getElementById("skeleton").classList.remove("visible");
+}
+
+function setLoading(on) {
+  document.getElementById("runBtn").disabled = on;
+  document.getElementById("runBtn").textContent = on ? "Analysing…" : "Run Strategic Analysis";
+  document.getElementById("skeleton").classList.toggle("visible", on);
+  if (on) document.getElementById("resultCard").classList.remove("visible");
+}
+
+function showError(msg) {
+  const el = document.getElementById("errorBox");
+  el.textContent = msg;
+  el.style.display = "block";
+}
+
+function addToHistory(mod, query) {
+  history.unshift({ label:mod.label, accent:mod.accent, q: query.slice(0,60)+(query.length>60?"…":""), time: new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}) });
+  history = history.slice(0,5);
+  const hs = document.getElementById("historySection");
+  const hl = document.getElementById("historyList");
+  hs.style.display = "block";
+  hl.innerHTML = history.map(h => `
+    <div class="history-card">
+      <div class="h-label" style="color:${h.accent}">${h.label}</div>
+      <div class="h-query">${escHtml(h.q)}</div>
+      <div class="h-time">${h.time}</div>
+    </div>
+  `).join("");
+}
+
+function updateExportState() {
+  const count = Object.keys(sessions).length;
+  const btn = document.getElementById("exportBtn");
+  btn.disabled = count === 0;
+  btn.style.opacity = count > 0 ? "1" : "0.5";
+  btn.textContent = count > 0 ? `⬇ View Brief (${count})` : "⬇ View Brief";
+
+  const panel = document.getElementById("exportReadyPanel");
+  const list  = document.getElementById("exportReadyList");
+  if (count > 0) {
+    panel.style.display = "block";
+    list.innerHTML = Object.values(sessions).map(s => `
+      <div style="font-size:11px;color:#374151;padding:2px 0;display:flex;align-items:center;gap:6px;">
+        <span style="width:7px;height:7px;border-radius:50%;background:#2D6A4F;display:inline-block;flex-shrink:0;"></span>
+        ${s.mod.label}
+      </div>
+    `).join("");
+  } else {
+    panel.style.display = "none";
+  }
+}
+
+/* ── EXPORT MODAL ──────────────────────────────────────────────── */
+function openExport() {
+  const body = document.getElementById("modalBody");
+  const mods = Object.values(sessions);
+  body.innerHTML = mods.map((s, i) => `
+    <div class="modal-module">
+      <div class="modal-module-tag">${s.mod.tag}</div>
+      <div class="modal-module-title">${s.mod.label}</div>
+      <div class="modal-module-q">Challenge: ${escHtml(s.query)}</div>
+      <div class="section-label" style="margin-bottom:6px;">Executive Summary</div>
+      <p style="font-size:13.5px;line-height:1.7;font-style:italic;padding-left:12px;border-left:2px solid #1E2761;margin-bottom:16px;color:#2C2416;">${escHtml(s.result.summary)}</p>
+      <div class="section-label" style="margin-bottom:8px;">Recommended Actions</div>
+      ${s.result.points.map((pt,j)=>`
+        <div class="action-row" style="margin-bottom:10px;">
+          <span class="action-badge">${j+1}</span>
+          <span class="action-text" style="font-size:13px;">${escHtml(pt)}</span>
+        </div>
+      `).join("")}
+      <div class="callout-row" style="margin-top:12px;">
+        ${s.result.week ? `<div class="callout-box"><div class="callout-lbl">This Week</div><div class="callout-txt" style="font-size:12px;">${escHtml(s.result.week)}</div></div>` : ""}
+        ${s.result.metric ? `<div class="callout-box metric"><div class="callout-lbl">Watch Metric</div><div class="callout-txt" style="font-size:12px;">${escHtml(s.result.metric)}</div></div>` : ""}
+      </div>
+      ${i < mods.length-1 ? '<div class="modal-divider"></div>' : ""}
+    </div>
+  `).join("");
+  document.getElementById("exportModal").classList.add("open");
+}
+
+function closeExport() {
+  document.getElementById("exportModal").classList.remove("open");
+}
+
+function copyBrief() {
+  const text = Object.values(sessions).map(s => `
+=== ${s.mod.label.toUpperCase()} ===
+Challenge: ${s.query}
+
+EXECUTIVE SUMMARY
+${s.result.summary}
+
+RECOMMENDED ACTIONS
+${s.result.points.map((p,i)=>`${i+1}. ${p}`).join("\n")}
+
+THIS WEEK
+${s.result.week}
+
+WATCH METRIC
+${s.result.metric}
+  `.trim()).join("\n\n" + "─".repeat(60) + "\n\n");
+
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById("copyBtn");
+    btn.textContent = "✓ Copied!";
+    btn.classList.add("copied");
+    setTimeout(() => { btn.textContent = "Copy Full Brief to Clipboard"; btn.classList.remove("copied"); }, 2500);
+  }).catch(() => {
+    alert("Could not copy automatically. Please select all text in the brief and copy manually.");
+  });
+}
+
+document.getElementById("exportModal").addEventListener("click", e => {
+  if (e.target === document.getElementById("exportModal")) closeExport();
+});
+
+function escHtml(str) {
+  return (str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+init();
+</script>
+</body>
+</html>
